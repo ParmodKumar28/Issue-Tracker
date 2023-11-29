@@ -28,7 +28,9 @@
 
     <!-- Displaying the issues of the project here -->
     <div class="col-md-9">
-      <h3 class="mb-2 bg-primary text-light p-2">Bugs Related to Project</h3>
+      <h3 class="mb-2 bg-primary text-light p-2">
+        <i class="fa-solid fa-bug me-1 ms-1"></i> Bugs Related to Project
+      </h3>
       <!-- Bug List Section -->
       <!-- List of issues -->
       <% if(issues.length > 0) { %> <% issues.forEach(issue => { %>
@@ -45,7 +47,7 @@
           <p class="card-text text-primary d-flex justify-content-between">
             Created at: <%= issue.createdAt.toLocaleString() %>
             <a href="/api/issues/delete/<%= issue._id %>/<%= project._id %>"
-              ><i class="fa-solid fa-trash-can fa-lg text-danger"></i
+              ><i class="fa-solid fa-bug-slash fa-xl text-danger"></i
             ></a>
           </p>
         </div>
