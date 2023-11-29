@@ -31,6 +31,11 @@ app.use(ejsLayouts);
 app.use(express.static('src/views'));
 app.use(express.static('public'));
 
+// Default route for landing page here.
+app.get('/', (req, res, next) => {
+    res.redirect('/api/home/');
+});
+
 // Routes
 app.use('/api/home', homeRouter);
 app.use('/api/projects', projectsRouter);
