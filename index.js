@@ -35,6 +35,12 @@ app.use('/api/home', homeRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/issues', issueRouter);
 
+// Error Handler Middleware
+app.use((err,req,res,next)=>{
+    console.log(err);
+    res.render("404page", {errorMessage: "Something went wrong at server side."});
+})
+
 
 // Port
 const PORT = process.env.PORT;

@@ -14,6 +14,6 @@ export const getProjects = async (req,res,next)=>{
         }
         res.render('home', {projects: projects, notification: notifictaion, search: false});
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 }

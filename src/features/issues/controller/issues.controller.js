@@ -25,7 +25,7 @@ export const createNewIssue = async(req,res,next)=>{
         const issues = await projectIssues(projectId);
         res.render('project-details', { project, issues, notification });
     } catch (error) {
-       console.log(error); 
+      next(error);
     }
 }
 
@@ -62,8 +62,7 @@ export const getFilteredIssues = async (req, res, next) => {
     return res.render('project-details', { project, issues, notification: "Filtered or searched issues." });
     
   } catch (error) {
-    console.error(error);
-    return res.status(500).send("Internal Server Error");
+    next(error);
   }
 };
 
@@ -83,7 +82,7 @@ export const deleteIssueById = async(req,res,next)=>{
     const project = await getProject(projectId);
     return res.render('project-details', { project, issues, notification});
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 }
 

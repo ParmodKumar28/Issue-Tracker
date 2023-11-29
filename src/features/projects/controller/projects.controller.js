@@ -18,19 +18,19 @@ export const createNewProject = async (req,res,next)=>{
         const projects = ProjectModel.find().sort({createdAt: -1});
         res.render('home', {projects:  projects, notification: notification, search: false});
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 }
 
 // Function to get project by id.
 export const getOneProject = async(req,res,next)=>{
     try {
-        const projectId = req.params.id;
+        const projectId = req.params.i;
         const project = await getProject(projectId);
         const issues = await projectIssues(projectId);
         res.render('project-details', {project, issues, notification: null});
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 }
 
@@ -47,7 +47,7 @@ export const deleteProject = async(req,res,next)=>{
         const projects = ProjectModel.find().sort({createdAt: -1});
         res.render('home', {projects:  projects, notification: notification, search: false});
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 }
 
@@ -65,7 +65,7 @@ export const updateProject = async(req,res,next)=>{
         const projects = ProjectModel.find().sort({createdAt: -1});
         res.render('home', {projects:  projects, notification: notification, search: false});
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 }
 
@@ -76,6 +76,6 @@ export const search =  async (req, res) => {
       const projects = await ProjectModel.find({ name: { $regex: searchQuery, $options: 'i' } });
       res.render('home', { projects ,notification: false, search: true});
     } catch (error) {
-      console.log(error);
+        next(error);
     }
 }
