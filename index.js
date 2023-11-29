@@ -12,6 +12,7 @@ import connectUsingMongoose from './config/mongooseConfig.js';
 import homeRouter from './src/features/home/routes/home.routes.js';
 import issueRouter from './src/features/issues/routes/issues.routes.js';
 import projectsRouter from './src/features/projects/routes/projects.routes.js';
+import mongoose from 'mongoose';
 
 
 // Creating Server
@@ -38,8 +39,12 @@ app.use('/api/issues', issueRouter);
 // Error Handler Middleware
 app.use((err,req,res,next)=>{
     console.log(err);
-    res.render("404page", {errorMessage: "Something went wrong at server side."});
-})
+    if(err instanceof mongoose.Error.ValidationError)
+    {
+        return res.render("404page", {errorMessage: err.message});
+    }
+    return res.render("404page", {errorMessage: "Something went wrong at server side."});
+});
 
 
 // Port
