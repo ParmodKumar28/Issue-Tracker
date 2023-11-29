@@ -25,7 +25,7 @@ export const createNewProject = async (req,res,next)=>{
 // Function to get project by id.
 export const getOneProject = async(req,res,next)=>{
     try {
-        const projectId = req.params.i;
+        const projectId = req.params.id;
         const project = await getProject(projectId);
         const issues = await projectIssues(projectId);
         res.render('project-details', {project, issues, notification: null});
