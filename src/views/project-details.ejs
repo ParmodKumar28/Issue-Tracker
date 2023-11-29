@@ -1,0 +1,318 @@
+<div class="container mt-4">
+  <div class="row">
+    <!-- Notifications -->
+    <% if (notification) { %>
+    <div
+      id="notification"
+      class="alert alert-success alert-dismissible fade show m-2"
+      role="alert"
+    >
+      <%= notification %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <script>
+      // Auto dismiss the alert after 5 seconds
+      setTimeout(function () {
+        const alert = document.getElementById("notification");
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }, 5000);
+    </script>
+    <% } %>
+    <!--  -->
+
+    <!-- Displaying the issues of the project here -->
+    <div class="col-md-9">
+      <h3 class="mb-2 bg-primary text-light p-2">Bugs Related to Project</h3>
+      <!-- Bug List Section -->
+      <!-- List of issues -->
+      <% if(issues.length > 0) { %> <% issues.forEach(issue => { %>
+      <div class="card mb-3 shadow">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fa-solid fa-bug me-2 text-primary fs-3"></i><%=
+            issue.title %>
+          </h5>
+          <p class="card-text"><%= issue.description %></p>
+          <p class="card-text">
+            <i class="fa-solid fa-user me-2"></i>Author: <%= issue.author %>
+          </p>
+          <p class="card-text text-primary d-flex justify-content-between">
+            Created at: <%= issue.createdAt.toLocaleString() %>
+            <a href="/api/issues/delete/<%= issue._id %>/<%= project._id %>"
+              ><i class="fa-solid fa-trash-can fa-lg text-danger"></i
+            ></a>
+          </p>
+        </div>
+        <div
+          class="card-footer bg-transparent border-success d-inline-flex flex-wrap"
+        >
+          <% issue.labels.forEach(label => { %>
+          <button type="button" class="btn btn-outline-secondary me-2 mb-1">
+            <%= label %>
+          </button>
+          <%})%>
+        </div>
+      </div>
+      <% }); %> <% } else { %>
+      <h1 class="h1 fs-1 mt-4">No Issues</h1>
+      <% } %>
+    </div>
+    <!--  -->
+
+    <!-- Form for serach filter and all -->
+    <div class="col-md-3">
+      <!-- Dynamic project name and description -->
+      <div class="col">
+        <h2 style="color: #007bff"><%= project.name %></h2>
+        <p style="color: #6c757d"><%= project.description %></p>
+        <!-- Button to create a new issue -->
+        <button
+          type="button"
+          class="btn btn-primary mb-4"
+          data-bs-toggle="modal"
+          data-bs-target="#createIssueModal"
+        >
+          Create Issue
+        </button>
+      </div>
+      <!--  -->
+
+      <form
+        action="/api/projects/filtered/<%= project._id %>"
+        method="get"
+        class="mb-4"
+      >
+        <h2 class="text-primary">Filter the issues</h2>
+        <div class="form-group">
+          <label for="labels">Filter by labels:</label>
+          <input
+            type="text"
+            id="labels"
+            name="labels"
+            class="form-control"
+            placeholder="Enter labels separated by commas"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="author">Filter by author:</label>
+          <input
+            type="text"
+            id="author"
+            name="author"
+            class="form-control"
+            placeholder="Enter author"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="title">Search by title:</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            class="form-control"
+            placeholder="Enter title"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Search by description:</label>
+          <input
+            type="text"
+            id="description"
+            name="description"
+            class="form-control"
+            placeholder="Enter description"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4">
+          Apply Filters
+        </button>
+      </form>
+      <!-- Form ends here for the filters -->
+    </div>
+  </div>
+  <!--  -->
+
+  <!-- Create Issue Modal -->
+  <div>
+    <div
+      class="modal fade"
+      id="createIssueModal"
+      tabindex="-1"
+      aria-labelledby="createIssueModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger">
+            <h5 class="modal-title text-white" id="createIssueModalLabel">
+              Create New Issue
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form
+              id="issueForm"
+              action="/api/issues/<%= project._id %>"
+              method="post"
+            >
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  required
+                  placeholder="Enter issue title"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  rows="3"
+                  required
+                  placeholder="Enter issue description min length 10"
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="labels" class="form-label">Labels</label>
+                <div id="labels">
+                  <!-- Add all labels as checkboxes -->
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Bug Reports"
+                      id="bugReports"
+                      name="labels[]"
+                    />
+                    <label class="form-check-label" for="bugReports"
+                      >Bug Reports</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Feature Requests"
+                      id="featureRequests"
+                      name="labels[]"
+                    />
+                    <label class="form-check-label" for="featureRequests"
+                      >Feature Requests</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Code Refactoring"
+                      id="codeRefactoring"
+                      name="labels[]"
+                    />
+                    <label class="form-check-label" for="codeRefactoring"
+                      >Code Refactoring</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Performance Issues"
+                      id="performanceIssues"
+                      name="labels[]"
+                    />
+                    <label class="form-check-label" for="performanceIssues"
+                      >Performance Issues</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Security Vulnerabilities"
+                      id="securityVulnerabilities"
+                      name="labels[]"
+                    />
+                    <label
+                      class="form-check-label"
+                      for="securityVulnerabilities"
+                      >Security Vulnerabilities</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Documentation Updates"
+                      id="documentationUpdates"
+                      name="labels[]"
+                    />
+                    <label class="form-check-label" for="documentationUpdates"
+                      >Documentation Updates</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Test Failures"
+                      id="testFailures"
+                      name="labels[]"
+                    />
+                    <label class="form-check-label" for="testFailures"
+                      >Test Failures</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="Dependency Updates"
+                      id="dependencyUpdates"
+                      name="labels[]"
+                    />
+                    <label class="form-check-label" for="dependencyUpdates"
+                      >Dependency Updates</label
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="author" class="form-label">Author</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="author"
+                  name="author"
+                  required
+                  placeholder="Enter author name"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Create new issue modal ends here. -->
+</div>

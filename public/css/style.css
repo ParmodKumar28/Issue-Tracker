@@ -1,0 +1,43 @@
+/* Style file here all external style code other than bootstrap is here */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,body{
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background-color: #e9ecef;
+  }
+
+  .navbar {
+    background-color: #343a40; /* Dark background */
+  }
+
+  .navbar-brand,
+  .nav-link {
+    color: #f8f9fa !important; /* Light text */
+  }
+
+  .navbar-toggler-icon {
+    background-color: #f8f9fa; /* Light background for toggler icon */
+  }
+
+  .navbar-toggler {
+    border-color: #f8f9fa; /* Light border color for toggler */
+  }
+
+  .btn-outline-success {
+    color: #28a745;
+    border-color: #28a745;
+  }
+
+  .btn-outline-success:hover {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+  }

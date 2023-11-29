@@ -1,0 +1,292 @@
+<!-- Code for displaying projects on the home page -->
+<div class="container">
+  <div class="row">
+    <!-- Notifications -->
+    <% if (notification) { %>
+    <div
+      id="notification"
+      class="alert alert-success alert-dismissible fade show m-2"
+      role="alert"
+    >
+      <%= notification %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <script>
+      // Auto dismiss the alert after 5 seconds
+      setTimeout(function () {
+        const alert = document.getElementById("notification");
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }, 5000);
+    </script>
+    <% } %>
+    <!--  -->
+
+    <div class="row">
+      <button
+        type="button"
+        class="btn btn-success mt-4 mb-4"
+        data-bs-toggle="modal"
+        data-bs-target="#new-project-modal"
+      >
+        Create New Project
+        <i class="fa-solid fa-laptop-code ms-2 fs-4"></i>
+      </button>
+    </div>
+
+    <!-- Search Projects -->
+    <% if(search) { %>
+    <div class="row">
+      <div class="alert alert-primary" role="alert">
+        Your search results are
+      </div>
+      <% if (projects.length > 0) { %> <% projects.forEach(function(project){ %>
+      <div class="col-md-4 mb-4">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title"><%= project.name %></h5>
+            <p class="card-subtitle text-white-50 mb-2">
+              By <%= project.author %>
+            </p>
+          </div>
+          <div class="card-body">
+            <p class="card-text text-dark"><%= project.description %></p>
+            <a
+              href="/api/projects/<%= project._id %>"
+              class="btn btn-outline-primary"
+              >More Info
+            </a>
+          </div>
+          <div
+            class="card-footer bg-light text-muted d-flex justify-content-between"
+          >
+            Created: <%= project.createdAt.toLocaleString() %>
+            <!-- Update Icon -->
+            <a
+              href="#"
+              class="update-project"
+              data-bs-toggle="modal"
+              data-bs-target="#update-project-modal-<%= project._id %>"
+            >
+              <i class="fa-solid fa-file-pen fs-4"></i>
+            </a>
+            <!-- Delete Icon -->
+            <a href="/api/projects/delete/<%= project._id %>">
+              <i class="fa-regular fa-trash-can text-danger fs-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+      <hr class="my-4" />
+      <% } else { %>
+      <div class="alert alert-info" role="alert">No projects found.</div>
+      <% } %>
+    </div>
+    <% } %>
+
+    <!-- Displaying Existing Projects -->
+    <div class="row">
+      <% if (projects.length > 0 && !search) { %> <%
+      projects.forEach(function(project) { %>
+      <!-- Display existing projects -->
+      <div class="col-md-4 mb-4">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title"><%= project.name %></h5>
+            <p class="card-subtitle text-white-50 mb-2">
+              <i class="fa-solid fa-user me-1"></i>
+              By <%= project.author %>
+            </p>
+          </div>
+          <div class="card-body">
+            <p class="card-text text-dark"><%= project.description %></p>
+            <a
+              href="/api/projects/<%= project._id %>"
+              class="btn btn-outline-primary"
+              >More Info</a
+            >
+          </div>
+          <div
+            class="card-footer bg-light text-muted d-flex justify-content-between"
+          >
+            Created: <%= project.createdAt.toLocaleString() %>
+            <!-- Update Icon -->
+            <a
+              href="#"
+              class="update-project"
+              data-bs-toggle="modal"
+              data-bs-target="#update-project-modal-<%= project._id %>"
+            >
+              <i class="fa-solid fa-file-pen fs-4"></i>
+            </a>
+            <!-- Delete Icon -->
+            <a href="/api/projects/delete/<%= project._id %>">
+              <i class="fa-regular fa-trash-can text-danger fs-4"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Update Project Modal -->
+      <div
+        class="modal"
+        tabindex="-1"
+        id="update-project-modal-<%= project._id %>"
+      >
+        <!-- Modal content for updating project -->
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal header -->
+            <div class="modal-header bg-success">
+              <h5 class="modal-title text-light">Update Project</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+              <!-- Form to update project details -->
+              <form
+                action="/api/projects/update/<%= project._id %>"
+                method="post"
+              >
+                <div class="mb-3">
+                  <label for="update-name" class="form-label">Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="update-name"
+                    name="name"
+                    value="<%= project.name %>"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="update-description" class="form-label"
+                    >Description</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="update-description"
+                    name="description"
+                    rows="3"
+                    required
+                  >
+<%= project.description %></textarea
+                  >
+                </div>
+                <div class="mb-3">
+                  <label for="update-author" class="form-label">Author</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="update-author"
+                    name="author"
+                    value="<%= project.author %>"
+                    required
+                  />
+                </div>
+                <!-- Other fields to update -->
+                <button type="submit" class="btn btn-primary">
+                  Update Project
+                </button>
+              </form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Update Project Modal ends here -->
+      <% }) %> <% } %>
+    </div>
+
+    <!-- Modal to create new project -->
+    <div class="modal" tabindex="-1" id="new-project-modal">
+      <!-- Modal content for creating a new project -->
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal header -->
+          <div class="modal-header bg-success">
+            <h5 class="modal-title text-light">Add New Project</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <p>Fill details for the project</p>
+            <form action="/api/projects" method="POST">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  required
+                  placeholder="Enter project name"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  required
+                  placeholder="Enter description"
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="author" class="form-label">Author</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="author"
+                  name="author"
+                  required
+                  placeholder="Enter author name"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Create Project
+              </button>
+            </form>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal to create new project Ends Here -->
+  </div>
+</div>
